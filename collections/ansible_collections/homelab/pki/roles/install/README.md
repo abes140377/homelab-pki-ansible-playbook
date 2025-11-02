@@ -1,4 +1,4 @@
-Homelab.Pki Run Role
+Homelab.Pki Install Role
 ========================
 
 A brief description of the role is here.
@@ -27,22 +27,22 @@ Including an example of how to use your role (for instance, with variables passe
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - role: homelab.pki.run
-      run_x: 42
+    - role: homelab.pki.install
+      install_x: 42
 ```
 
 Another way to consume this role would be:
 
 ```yaml
-- name: Initialize the run role from homelab.pki
+- name: Initialize the install role from homelab.pki
   hosts: servers
   gather_facts: false
   tasks:
-    - name: Trigger invocation of run role
+    - name: Trigger invocation of install role
       ansible.builtin.include_role:
-        name: homelab.pki.run
+        name: homelab.pki.install
       vars:
-        run_x: 42
+        install_x: 42
 ```
 
 License

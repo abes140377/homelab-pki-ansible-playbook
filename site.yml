@@ -1,5 +1,6 @@
 ---
 - name: Example playbook
-  hosts: localhost
+  hosts: vault_servers
+  become: true
   roles:
-    - role: homelab.pki.run
+    - role: homelab.pki.install
