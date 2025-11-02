@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+#MISE description="Install Ansible dependencies from requirements file"
+#USAGE arg "[inventory]" help="Path to Ansible inventory file" default="inventory/hosts.yml"
+#USAGE arg "[playbook]" help="Path to Ansible playbook file" default="site.yml"
+
+ansible-playbook -i ${usage_inventory:-inventory/hosts.yml} ${usage_playbook:-site.yml}

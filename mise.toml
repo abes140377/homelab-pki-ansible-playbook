@@ -1,0 +1,59 @@
+[tools]
+dagger = "0.19.3"
+uv = "latest"
+
+[settings]
+python.uv_venv_auto = true
+
+[env]
+PROJECT_NAME = "{{ config_root | basename }}"
+
+_.file = [
+  { path = "{{env.HOME}}/.env", optional = true },
+  { path = ".env", optional = true },
+  { path = ".creds.env.yaml", redact = true }
+]
+_.python.venv = { path = ".venv", create = true }
+_.path = [
+  "./scripts"
+]
+
+[hooks]
+enter = [
+  'echo ""',
+  'echo "[MISE] Setup $PROJECT_NAME project..."',
+  #
+  'mise i -q',
+  #
+  'pre-commit install -f --hook-type pre-commit',
+  #
+  'uv pip install -q -r requirements.txt',
+  # Temporarily uninstall pytest-ansible to avoid plugin conflicts
+  'uv pip uninstall -q pytest-ansible',
+  #
+  'echo "$ANSIBLE_SSH_PRIVATE_KEY" > keys/ansible_id_ecdsa',
+  'chmod 600 keys/ansible_id_ecdsa'
+]
+
+[tasks.install-deps]
+description = "Install Python dependencies"
+run = [
+  "uv pip install -r requirements.txt",
+  # Temporarily uninstall pytest-ansible to avoid plugin conflicts
+  "uv pip uninstall -q pytest-ansible",
+  # Reinstall pytest-ansible (part of ansible-dev-tools)
+  # "uv pip install -q -r requirements.txt"
+]
+
+[tasks."dagger:ansible-build"]
+description = "Run Ansible playbook using local Dagger function"
+usage = '''
+arg "<args>" help="Additional arguments to pass to the dagger commandline" default=""
+'''
+run = '''
+dagger call ansible-build \
+  --directory . \
+  --playbook site.yml \
+  --requirements-file requirements.yml \
+  --ssh-private-key file:./keys/ansible_id_ecdsa ${usage_args?}
+'''

@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+#MISE description="Install Ansible dependencies from requirements file"
+#USAGE arg "[file]" help="Path to Ansible requirements file" default="requirements.yml"
+#
+ansible-galaxy collection install -r "${usage_file:-requirements.yml}"
+ansible-galaxy role install -r "${usage_file:-requirements.yml}"
